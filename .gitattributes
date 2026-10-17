@@ -1,0 +1,5 @@
+# Keep distributed package bytes identical across platforms.
+project-packages/** -text
+*.zip binary
+*.pdf binary
+*.png binary

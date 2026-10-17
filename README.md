@@ -1,164 +1,169 @@
-# Singulari-Tea Codex: A Modular Architecture for Dynamic Narrative Simulation (only v4)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-GPTs : https://chatgpt.com/g/g-6905bdde46248191a9ee410e72f9b9cc-world-simulator
+# World Simulator v6 · Singulari-Tea Codex
 
-## 1. Overview
+**월드 시뮬레이터 정식 릴리즈 v6** · 제작 **fewweekslater**
 
-This document is the official technical whitepaper for the 'Singulari-Tea Codex' project, detailing its technical architecture, design principles, and implementation specifics. The project aims to achieve stability, scalability, and maintainability in complex, state-dependent narrative simulations through a modular prompt architecture based on the Single Responsibility Principle.
+원작 속 세계, 역사 속 시대, 직접 만든 세계에서 한 인물의 삶을 대화와 행동으로 이어가는 서사 시뮬레이터입니다. 인물의 능력과 관계, 몸 상태, 시간과 주변 상황이 선택의 결과에 함께 작용합니다.
 
-## 2. Technical Background and Execution Environment
+This repository distributes the official **World Simulator v6 ChatGPT project package**, based on the GPT edition. Choose a world and a protagonist, then explore through dialogue and freeform actions. [English quick start](#english-quick-start)
 
-### 2.1. Target LLM: Google Gemini 2.5 Pro
+[**v6 ZIP 다운로드**](project-packages/v6/world-simulator-chatgpt-project-v6.zip?raw=1) · [패키지 파일 보기](project-packages/v6/world-simulator-chatgpt-project-v6/) · [Google Drive 다운로드](https://drive.google.com/file/d/1yjqCoBeJfrFFY5KYkkDBzLzvbTg_x7F1/view?usp=sharing)
 
-This architecture is specifically designed to leverage the capabilities of the Google Gemini 2.5 Pro model. The successful execution of the simulation is highly dependent on the following two key factors:
+[**GPTs · v6**](https://chatgpt.com/g/g-6905bdde46248191a9ee410e72f9b9cc-world-simulator) · [**GEM · v5**](https://gemini.google.com/gem/1tr5ZgViWa2vSOR9zgEORQBq8qrblx8o1?usp=sharing) · [후원하기](https://ctee.kr/place/fewweekslater) · [통합 프롬프트 아카이브](https://gall.dcinside.com/mgallery/board/view/?id=thesingularity&no=907541&exception_mode=recommend&search_head=120&page=1)
 
-1.  High-Fidelity Prompt Adherence: The ability to execute the instructions and complex interaction logic of dozens of separate modules sequentially and without error is essential.
-2.  Large Context Window: A model with a context window of at least 1M tokens is required to maintain the `SHN` (the simulation state object) and the entire module codebase within the context.
+> **현재 배포 기준:** GPTs는 v6로 업데이트했습니다. GEM은 업데이트하지 않았으며 **v5**입니다. 프로젝트 패키지는 GPT 버전을 기준으로 구성했습니다. `.cc` 기능은 잠시 제외되어 추후 복원 예정이며, 기존 이미지 모드도 제외되어 있습니다.
 
-### 2.2. Known Limitations
+## 프로젝트에 설치하기
 
--   Instability in Linguistic Fidelity and Translation: The real-time linguistic verification and translation functions performed by the `F0_language_engine_seal` module may occasionally malfunction due to a phenomenon referred to as 'Context Pollution'. This is presumed not to be a flaw in the prompt logic but rather a fundamental performance limitation of the current generation of LLMs in consistently maintaining the priority of specific instructions within a complex context. It is anticipated that with the release of next-generation models like Gemini 3.0 Pro, this issue of simulator consistency will be significantly improved.
+1. 위의 **v6 ZIP**을 다운로드하고 압축을 풉니다.
+2. ChatGPT에서 프로젝트를 만들거나 사용할 프로젝트를 엽니다.
+3. 프로젝트 설정의 **지침**에 [ProjectInstructions.md](project-packages/v6/world-simulator-chatgpt-project-v6/ProjectInstructions.md)의 **내용 전체**를 붙여 넣고 저장합니다.
+4. 프로젝트의 **소스 → 소스 추가**에서 아래 Markdown 파일 **4개**를 모두 업로드합니다.
+5. 그 프로젝트 안에서 새 채팅을 열고 원하는 세계·인물·시작 시점을 말합니다. 정하지 않은 부분은 시작 안내에서 함께 정할 수 있습니다.
 
-### 2.3. Compatibility with Other LLMs
+| 등록 위치 | 파일 | 역할 |
+| --- | --- | --- |
+| 프로젝트 설정 → 지침 | [ProjectInstructions.md](project-packages/v6/world-simulator-chatgpt-project-v6/ProjectInstructions.md) | 프로젝트 소스를 적용하는 기준 |
+| 프로젝트 → 소스 | [Instructions.md](project-packages/v6/world-simulator-chatgpt-project-v6/sources/Instructions.md) | 세계·서사·진행·판정 |
+| 프로젝트 → 소스 | [GenUI.md](project-packages/v6/world-simulator-chatgpt-project-v6/sources/GenUI.md) | 장면에 맞는 화면·버튼·자유 입력·사진 |
+| 프로젝트 → 소스 | [SaveRestore.md](project-packages/v6/world-simulator-chatgpt-project-v6/sources/SaveRestore.md) | 저장 버튼·누적 세이브·복원 |
+| 프로젝트 → 소스 | [OutputLength.md](project-packages/v6/world-simulator-chatgpt-project-v6/sources/OutputLength.md) | 출력량 선택과 설정 유지 |
 
-Directly using this prompt architecture on other models such as GPT-5 or Claude 4 is not recommended, and successful execution cannot be guaranteed. The primary reasons are as follows:
+**지침 칸과 소스 탭은 서로 다른 곳입니다.** PDF·README·안내 이미지는 사용 설명용입니다. 이전 버전으로 설정한 프로젝트라면 같은 역할의 구버전 소스를 새 파일로 교체해주세요.
 
--   System Prompt Interference: Most commercial models have powerful, non-configurable base system prompts (e.g., "You are a helpful assistant..."). This interferes with the complete persona control required by the simulation and can lead to unexpected behavior.
--   Output Summarization Tendency: Some models have a tendency to summarize long outputs or generate responses that are not optimized for turn-based interaction. This can corrupt the simulation's state information and UI structure.
+### ① 프로젝트 지침 붙여 넣기
 
-## 3. Core Architecture
+![프로젝트 설정의 지침 칸에 ProjectInstructions.md 전체 내용을 붙여 넣는 위치](project-packages/v6/world-simulator-chatgpt-project-v6/images/01-project-instructions.png)
 
-### 3.1. Core Concepts
+*설정 안내도입니다. 노란 화살표 ①이 지침 입력 위치를 가리킵니다. 그림에는 영문 일부만 보이므로 실제 파일을 열어 전체 내용을 복사해주세요.*
 
--   SHN (Soulforged Chronicle): A central JSON object that contains the entire state of the simulation (protagonist, world, discoveries, etc.). It functions as the 'Single Source of Truth' for all modules.
--   Modular Design: All functionalities are separated into independent files with clear responsibilities within the `prompt_src/` directory. This enhances code reusability and simplifies debugging.
--   E0 Master CoT Loop: A central orchestration engine that processes turns by sequentially calling the necessary modules in response to user input. All data flow and execution order are controlled by E0.
+### ② 소스 파일 4개 등록하기
 
-### 3.2. Execution Flow
-<img width="863" height="872" alt="Image" src="https://github.com/user-attachments/assets/0b41f171-f8bd-48dc-b196-65c4d7a909f0" />
+![프로젝트 소스 추가 버튼과 등록할 네 파일](project-packages/v6/world-simulator-chatgpt-project-v6/images/02-project-sources.png)
 
-#### 3.2.1. Initialization Sequence
+*설정 안내도입니다. 노란 화살표 ②의 소스 추가로 네 파일을 올린 뒤, 목록에 모두 등록됐는지 확인해주세요.*
 
-1.  [G0] Onboarding: Analyzes user input to determine whether to start a new simulation or load SHN data.
-2.  [C1] Epic Chronicle: Generates the protagonist's identity and core data (especially the linguistic profile) and saves it to the SHN.
-3.  [G1/G2] World & Narrative Generation: Declares the laws of the world and generates the initial narrative based on the data stored in the SHN. All character utterances during this process are validated by the `F0_language_engine_seal`.
-4.  [E0] Handoff: After initialization is complete, control is passed to the main loop, E0.
+그림과 함께 보려면 [설정 및 사용법 PDF · 6쪽](project-packages/v6/world-simulator-chatgpt-project-v6/월드시뮬레이터_설정_및_사용법_v6.pdf) 또는 [패키지 사용 안내](project-packages/v6/world-simulator-chatgpt-project-v6/README.md)를 열어주세요.
 
-#### 3.2.2. Main Interaction Loop
+## 어떻게 플레이하나요?
 
-For each turn, the `E0` module strictly follows this Chain-of-Thought (CoT):
+### 대화와 행동으로 움직이는 이야기
 
-1.  Intent Parsing: Interprets the user's input.
-2.  World State Update: Calls simulation engines like physics (`SYS_PHYSICS`) and health (`SYS_HEALTH`) to update the SHN data.
-3.  Data-to-Text Conversion: The `H0` module converts the updated numerical data into descriptive text.
-4.  Narrative Generation: Calls narrative modules such as `D0` and `D1` to generate the main story.
-5.  Choice Generation: The `H2` module generates context-appropriate choices.
-6.  Final Rendering: The `H1` module assembles all text components into the final UI for output.
+대화할 수 있는 장면에서는 인물들의 말과 반응이 전개를 이끕니다. 서술은 위치와 행동, 말로 드러나지 않는 감각과 심리를 보탭니다. 이동과 전환은 짧게, 중요한 대화와 변화는 충분히 펼치도록 장면에 따라 호흡을 조절합니다.
 
-## 4. Conclusion
+장면에 어울리는 작가의 문학적 감각을 본문 전반의 시점·리듬·심리·대화에 반영하고, 상단의 작가명과 짧은 적용 설명으로 드러냅니다. 문장은 해당 상황에 맞게 새로 쓰며, 원작이 있는 세계에서는 확인된 장면·순서·설정을 지키고 사용자의 행동이 바꾼 부분을 이어갑니다.
 
-The 'Singulari-Tea Codex' is a case study in systematizing the development and maintenance of complex dynamic simulations by applying the Single Responsibility Principle to prompt engineering. This modular architecture offers the following clear advantages:
+### 목표를 보고 직접 선택하기
 
--   Stability: Loose coupling between modules minimizes the side effects of modifications on the entire system.
--   Scalability: New features can be added as independent modules without affecting existing code.
--   Maintainability: When issues arise, debugging is simplified as it's confined to specific modules with clear responsibilities.
+현재 목표와 진행 상황, 장면 속 단서를 보고 행동하거나 인물에게 말을 걸어주세요. 필요한 경우 다음 목표를 찾을 수 있는 힌트가 제시됩니다. 목표를 바꾸거나 미루는 것도 가능합니다.
 
-## 5. Usage & Policy
+길을 잃었을 때는 **`이어하기`를 직접 입력**하면 현재 목표 방향으로 진행합니다. 중요한 새 선택과 위험한 결정 앞에서는 사용자의 판단을 기다립니다. 별도의 이어하기 버튼은 두지 않습니다.
 
-### 5.1. Getting Started
+### 선택의 기로와 판정
 
-1.  Project Setup: Arrange the prompt files according to the directory structure specified in `project-structure.txt`.
-2.  Module Modification: Modify the content of existing modules or add new ones within the `prompt_src/` directory.
-3.  Bundling: Use the provided bundler script (`prompt-bundler.js`) to merge all modules from `prompt_src/` into a single `master_prompt.txt` file.
-4.  Execution: Input the entire content of the generated `master_prompt.txt(Singulari-Tea Codex_v1_250921.txt)` into an environment that supports Gemini 2.5 Pro to start the simulation.
+의미 있는 기로에서는 상황에 맞는 행동 버튼과 함께 목표의 성공 가능성 또는 **미상**, 소모와 성공·실패의 손익을 제시합니다. 버튼 밖의 서술형 행동도 같은 규칙으로 해석합니다. ‘상대를 쓰러뜨린다’는 입력은 실행하려는 시도입니다.
 
-### 5.2. Source Code Policy
+확률과 결과에는 양측의 숙련도·지략·지식·장비·자원, 몸 상태와 피로, 거리·자세·시간·환경이 반영됩니다. 열린 결과는 조건을 정한 뒤 사용 가능한 코드 실행 도구로 한 번 판정하며, 같은 시도의 재전송은 기존 결과를 사용합니다. 검증된 원작의 고정된 흐름을 그대로 재현하는 구간은 열린 판정과 구분합니다.
 
--   All `*.prompt.txt` files included in this repository are open for viewing and modification.
--   However, the source code for bundling-related scripts, including `prompt-bundler.js`, is not public.(Commercial use requires preserving the license information)
--   This project is licensed under the apache license 2.0.
+실패는 부상·자원 손실·관계 악화·진행 후퇴로 이어질 수 있습니다. 출혈과 위협은 세계 시간에 따라 계속 작용하며, 치명적인 행동은 그 상황에서 사망으로 끝날 수 있습니다. 상대의 피해와 남은 상태도 누적됩니다. 회복에는 세계가 허용하는 휴식·음식·치료·능력과 그에 따른 시간·비용이 필요합니다.
 
-# Singulari-Tea Codex: A Modular Architecture for Dynamic Narrative Simulation
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+### 몸 상태와 살아 있는 주변 세계
 
-## 1. 개요 (Overview)
+몸 상태는 **감각과 행동 가능한 정도의 묘사가 먼저**입니다. 숫자는 피해와 진행을 분명하게 할 때 보조로 사용합니다. 장면에 필요한 소지품·자원·관계·환경 정보도 상황에 맞춰 표시합니다.
 
-이 문서는 'Singulari-Tea Codex' 프로젝트의 기술 아키텍처, 설계 원칙 및 구현 세부 사항을 설명하는 공식 기술 백서입니다. 
-본 프로젝트는 단일 책임 원칙(Single Responsibility Principle)에 기반한 모듈형 프롬프트 아키텍처를 통해, 복잡하고 상태 의존적인 서사 시뮬레이션의 안정성, 확장성, 유지보수성을 확보하는 것을 목표로 합니다.
+- **시간:** 세계 내부 시각, 그 시대의 역법과 이전 턴부터의 경과 시간을 따릅니다.
+- **위치:** 위치 이름에 지도 링크를 연결합니다. 지구의 확인된 지점은 GPS를 링크에 담고, 불명확한 지리는 확인된 범위와 불확실성을 표시합니다.
+- **환경:** 날씨·기온·빛·대기·천체는 세계와 관찰 가능한 조건에 맞춥니다.
+- **감각 스캔:** 감지할 수 있는 대상의 정체, 나와의 거리·방향을 보여줍니다. 알 수 없는 정보는 추정 또는 미상으로 남습니다.
+- **고증언어모드:** 한국어 서술과 UI를 사용하고, 인물의 모국어 대사에 한국어 번역을 붙입니다. 모국어가 한국어라면 한 번만 표시합니다.
 
-## 2. 기술적 배경 및 실행 환경
+`Codex 열어줘`로 주인공의 연대기·세계 연감·세계 청사진·실시간 분석 등을 살펴볼 수 있습니다. 큰 시간 간격을 관찰하고 싶다면 자연어로 요청해주세요. 시간이 흐르는 동안에도 세계의 인과와 미해결 사건은 이어집니다.
 
-### 2.1. 목표 LLM: Google Gemini 2.5 Pro
+### GenUI와 출력량
 
-본 아키텍처는 Google Gemini 2.5 Pro 모델의 특성을 최대한 활용하도록 설계되었습니다. 시뮬레이션의 성공적인 구동은 다음 두 가지 핵심 요소에 크게 의존합니다.
+GenUI는 장면에 맞는 상태 표시, 선택 버튼, 자유로운 행동·대사 입력창, Codex와 외부 사진을 구성합니다. 사진은 세계·시대·장소에 맞게 검색하고 출처와 성격을 구분하도록 지시합니다. 이는 현재 제외된 전용 이미지 모드와 별개의 기능입니다.
 
-1.  강력한 프롬프트 이행 능력 (High-Fidelity Prompt Adherence): 수십 개의 분리된 모듈의 지시사항과 복잡한 상호작용 로직을 오류 없이 순차적으로 이행하는 능력이 필수적입니다.
-2.  대용량 컨텍스트 창 (Large Context Window): 시뮬레이션의 모든 상태를 기록하는 `SHN` 객체와 전체 모듈 코드를 컨텍스트 내에 유지해야 하므로, 최소 1M 토큰 이상의 컨텍스트 창을 갖춘 모델이 요구됩니다.
+분량은 기본적으로 **자율**입니다. 온보딩에서 서사 본문의 하한을 **5000 / 8000 / 12000 / 15000자** 중 선택할 수 있고, 나중에 변경하거나 자율로 돌릴 수 있습니다. 설정 변경은 턴과 세계 시간을 소모하지 않으며 저장에도 유지됩니다.
 
-### 2.2. 알려진 한계 (Known Limitations)
+**기능 지원:** 버튼·입력창·사진 검색·코드 판정·파일 생성은 현재 대화에 제공된 도구를 사용합니다. 이 패키지는 해당 동작을 정하는 지침이며, 파일 등록만으로 별도 실행 도구가 설치되지는 않습니다. 지원되지 않는 화면 기능은 읽을 수 있는 서술과 직접 입력으로 이어갑니다. 실행하지 못한 판정이나 만들지 못한 파일을 완료했다고 처리하지 않도록 되어 있습니다.
 
--   언어 고증 및 번역의 불안정성: `F0_language_engine_seal` 모듈이 수행하는 실시간 언어 고증 및 번역 기능은 간헐적으로 '컨텍스트 오염(Context Pollution)' 현상으로 인해 의도대로 작동하지 않을 수 있습니다. 
-이는 프롬프트 로직의 결함이라기보다는, 복잡한 컨텍스트 내에서 특정 지시사항의 우선순위를 일관되게 유지하는 현세대 LLM의 근본적인 성능 한계에 기인하는 것으로 추론됩니다. 
-차후 Gemini 3.0 Pro와 같은 차세대 모델이 출시되면, 이러한 시뮬레이터의 일관성 문제가 크게 개선될 것으로 전망합니다.
+## 저장하고 새 대화에서 복원하기
 
-### 2.3. 타 모델 호환성 (Compatibility with Other LLMs)
+**설치용 v6 패키지 ZIP**과 **플레이 기록을 담는 월드 세이브 ZIP**은 용도가 다릅니다.
 
-본 프롬프트 아키텍처를 GPT-5나 Claude 4 등의 타사 모델에서 직접 사용하는 것은 권장되지 않으며, 성공적인 실행을 보장하기 어렵습니다. 주된 이유는 다음과 같습니다.
+1. 응답의 **저장** 버튼을 누르거나 `저장`이라고 입력합니다. 저장 버튼은 온보딩과 종료 응답에도 표시하도록 지시합니다.
+2. 실제 생성된 **월드 세이브 ZIP**을 다운로드합니다. 이후 저장에는 같은 계보의 최신 ZIP을 사용해 누적 기록을 이어 붙입니다.
+3. 새 대화로 옮길 때는 같은 프로젝트 안에서 채팅을 열고, 최신 월드 세이브 ZIP을 첨부해 **복원을 요청**합니다.
+4. 저장된 상황을 확인한 뒤 행동을 입력합니다. 복원 자체는 턴·시간·회복·진전·재추첨·부활을 발생시키지 않습니다.
 
--   시스템 프롬프트 간섭: 대부분의 상용 모델은 사용자가 제어할 수 없는 강력한 기본 시스템 프롬프트(예: "You are a helpful assistant...")를 가지고 있습니다. 이는 시뮬레이션이 요구하는 완전한 페르소나 제어를 방해하고, 예기치 않은 동작을 유발합니다.
--   출력 요약 경향: 일부 모델은 긴 출력을 자동으로 요약하거나, 턴제 상호작용에 최적화되지 않은 응답을 생성하는 경향이 있습니다. 이는 시뮬레이션의 상태 정보와 UI 구조를 손상시킬 수 있습니다.
+기본 자동 저장은 완료된 정상 플레이 **8턴마다**이며 중대한 변화에는 별도의 체크포인트를 남깁니다. 저장과 불러오기는 세계 시간을 진행시키지 않습니다. 복원 카드만으로 옮기면 ZIP보다 기록이 부족할 수 있으므로 최신 ZIP을 보관해주세요.
 
-## 3. 핵심 아키텍처 (Core Architecture)
+버튼이 보이지 않으면 `저장`이나 원하는 행동을 직접 입력할 수 있습니다. 파일 생성 도구를 사용할 수 없는 대화에서는 실제 ZIP 다운로드가 제한됩니다.
 
-### 3.1. 핵심 개념 (Core Concepts)
+## v5에서 v6로 바뀐 점
 
--   SHN (Soulforged Chronicle): 시뮬레이션의 모든 상태(주인공, 세계, 발견 등)를 포함하는 중앙 JSON 객체. 모든 모듈의 유일한 '진실의 원천(Single Source of Truth)'으로 기능합니다.
--   모듈형 설계 (Modular Design): 모든 기능은 `prompt_src/` 내에서 명확한 책임을 가진 독립된 파일로 분리됩니다. 이는 코드의 재사용성을 높이고 디버깅을 용이하게 합니다.
--   E0 Master CoT Loop: 사용자 입력에 따라 필요한 모듈을 순차적으로 호출하여 턴을 처리하는 중앙 오케스트레이션 엔진입니다. 모든 데이터 흐름과 실행 순서는 E0에 의해 제어됩니다.
+| 영역 | v6의 구성과 변화 |
+| --- | --- |
+| 배포와 설정 | GPT 버전 기준의 프로젝트 패키지로 정리했습니다. 설정 지침과 역할별 소스 4개, PDF·안내 이미지·사용 설명을 함께 제공합니다. |
+| 서사와 분량 | 인물 간 대화가 장면을 이끌고, 문학적 감각은 본문 전반에 적용하도록 다듬었습니다. 고정된 장문 강제 대신 장면별 호흡과 선택 가능한 출력량 하한을 사용합니다. |
+| 진행 방식 | 현재 목표·진행·힌트를 통해 사용자가 직접 움직입니다. 이어하기는 직접 입력하며, 선택 버튼은 의미 있는 기로에서 제시합니다. 원작의 고정된 흐름과 열린 결과를 구분합니다. |
+| 판정과 결과 | 선언을 시도로 해석하고 능력·상태·상대·환경을 반영합니다. 확률·소모·손익을 먼저 정하고 코드 도구로 판정하며, 서술형 행동에도 같은 기준을 적용합니다. 피해·회복·실패의 대가를 누적하고 치명적인 결과를 실제로 반영합니다. |
+| 세계와 상태 표시 | 시대별 역법과 세계 시간, 턴 경과, 위치 링크, 감각 대상의 거리·방향을 유지합니다. 상태는 서술이 먼저이고 숫자는 보조입니다. 화면은 세계와 장면에 맞게 구성합니다. |
+| GenUI | 행동 버튼·자유 입력·Codex·사진을 장면 속에 적극적으로 배치하도록 별도 지침을 구성했습니다. 실제 작동 범위는 대화 도구에 따릅니다. |
+| 저장·복원 | 기존 저장 기능을 현재 진행·판정·GenUI에 맞게 정리했습니다. 누적 기록, 양측 상태, 진행 중 시도, 작가 적용 기록과 분량 설정을 보존하고 복원만으로 결과를 바꾸지 않도록 했습니다. |
+| 제외된 기능 | `.cc`는 잠시 제외했으며 추후 복원 예정입니다. 기존 이미지 모드도 제외했습니다. 복원 일정은 정해 두지 않았습니다. |
 
-### 3.2. 실행 흐름 (Execution Flow)
-<img width="863" height="872" alt="Image" src="https://github.com/user-attachments/assets/0b41f171-f8bd-48dc-b196-65c4d7a909f0" />
+프로젝트 패키지는 GPTs 배포 방식 변화에 대응해 사용자가 직접 설정하고 보관할 수 있도록 제공하는 배포본입니다. OpenAI의 [Custom GPT 마이그레이션 안내](https://learn.chatgpt.com/docs/migrate-custom-gpts)는 Enterprise 워크스페이스를 대상으로 하며, 모든 계정에 같은 종료 일정이 적용된다는 뜻은 아닙니다.
 
-#### 3.2.1. 초기화 시퀀스 (Initialization Sequence)
+## 저장소 구조와 구버전
 
-1.  [G0] Onboarding: 사용자 입력을 분석하여 새 시뮬레이션 시작 또는 SHN 데이터 로드를 결정합니다.
-2.  [C1] Epic Chronicle: 주인공의 정체성 및 핵심 데이터(특히 언어 프로필)를 생성하여 SHN에 저장합니다.
-3.  [G1/G2] World & Narrative Generation: SHN에 기록된 데이터를 기반으로 세계의 법칙을 선언하고 초기 서사를 생성합니다. 이 과정에서 발생하는 모든 캐릭터 발화는 `F0_language_engine_seal`의 검증을 거칩니다.
-4.  [E0] Handoff: 초기화 완료 후, 제어권을 메인 루프인 E0으로 전달합니다.
+```text
+LICENSE
+README.md
+project-packages/
+  v6/
+    world-simulator-chatgpt-project-v6.zip
+    world-simulator-chatgpt-project-v6/
+      ProjectInstructions.md
+      README.md
+      월드시뮬레이터_설정_및_사용법_v6.pdf
+      sources/
+        Instructions.md
+        GenUI.md
+        SaveRestore.md
+        OutputLength.md
+      images/
+        01-project-instructions.png
+        02-project-sources.png
+legacy/
+  v4/
+    README.md
+    Singulari-Tea Codex_v4.txt
+  v5/
+    Singulari-Tea Codex_v5_260312.txt
+```
 
-#### 3.2.2. 메인 인터랙션 루프 (Main Interaction Loop)
+- [v5 원본 프롬프트](legacy/v5/Singulari-Tea%20Codex_v5_260312.txt) · [v5 기존 다운로드](https://drive.google.com/file/d/1ULaIG5ui8B6naMHj1ef79_TWh3HT0K5t/view)
+- [v4 원본 프롬프트](legacy/v4/Singulari-Tea%20Codex_v4.txt) · [v4 당시 기술 문서](legacy/v4/README.md) · [v4 기존 다운로드](https://drive.google.com/file/d/16o70uruViDbYjvnNIH0IRAq-YrPDY6Wo/view?usp=sharing)
 
-매 턴마다 `E0` 모듈은 다음의 '생각의 사슬(Chain-of-Thought)'을 엄격하게 따릅니다.
+구버전 파일과 v4 기술 문서는 당시 내용을 보존한 자료입니다. 문서의 Gemini 2.5 Pro·모듈·번들러 설명은 구버전 기준입니다. `prompt_src` 디렉터리는 현재 배포 트리에서 제거했으며 이전 내용은 Git 이력에 남아 있습니다.
 
-1.  Intent Parsing: 사용자 입력을 해석합니다.
-2.  World State Update: 물리(`SYS_PHYSICS`), 건강(`SYS_HEALTH`) 등 시뮬레이션 엔진을 호출하여 SHN 데이터를 갱신합니다.
-3.  Data-to-Text Conversion: `H0` 모듈이 갱신된 수치 데이터를 서술형 텍스트로 변환합니다.
-4.  Narrative Generation: `D0`, `D1` 등 서사 모듈을 호출하여 메인 스토리를 생성합니다.
-5.  Choice Generation: `H2` 모듈이 현재 상황에 맞는 선택지를 생성합니다.
-6.  Final Rendering: `H1` 모듈이 모든 텍스트 컴포넌트를 조합하여 최종 UI를 출력합니다.
+## English quick start
 
-## 4. 결론 (Conclusion)
+1. Download and extract the [v6 package ZIP](project-packages/v6/world-simulator-chatgpt-project-v6.zip?raw=1).
+2. Create or open a ChatGPT project. Paste the **entire contents** of [ProjectInstructions.md](project-packages/v6/world-simulator-chatgpt-project-v6/ProjectInstructions.md) into its project instructions.
+3. Add all four files in [sources](project-packages/v6/world-simulator-chatgpt-project-v6/sources/) to the project's sources: `Instructions.md`, `GenUI.md`, `SaveRestore.md`, and `OutputLength.md`.
+4. Open a conversation inside that project and describe your world, protagonist, and starting point. The packaged guide and setup images are in Korean; the operating sources are in English. Narrative and interface output are configured for Korean, with native-language dialogue and Korean translation.
 
-'Singulari-Tea Codex'는 단일 책임 원칙을 프롬프트 엔지니어링에 적용하여 복잡한 동적 시뮬레이션의 개발 및 유지보수를 체계화한 사례입니다. 이 모듈형 아키텍처는 다음과 같은 명확한 이점을 제공합니다.
+Play uses current goals, scene clues, dialogue, and freeform actions. Type `이어하기` for guided progress; important new decisions await your input. Meaningful forks may offer actions with estimated probabilities or unknowns, costs, and consequences. Outcomes consider abilities, both sides' state, environment, and elapsed world time. Serious choices can lead to irreversible death under the world's rules.
 
--   안정성 (Stability): 모듈 간의 낮은 결합도는 수정 작업이 시스템 전체에 미치는 부작용을 최소화합니다.
--   확장성 (Scalability): 새로운 기능을 기존 코드에 영향을 주지 않고 독립된 모듈로 추가할 수 있습니다.
--   유지보수성 (Maintainability): 문제 발생 시 책임 범위가 명확한 특정 모듈만 수정하면 되므로 디버깅이 용이합니다.
+Narrative length is automatic by default, with optional story-text minima of 5000, 8000, 12000, or 15000 characters. Body-state descriptions lead; numbers support relevant adjudication. GenUI, images, code-based draws, and downloadable saves depend on tools available in the conversation.
 
-## 5. 사용법 및 정책 (Usage & Policy)
+Use the save control or type `저장`, then keep the actual **world save ZIP**. To resume in a new conversation, attach the latest save inside the project and explicitly request restoration. Loading itself does not advance time, heal, resurrect, or reroll outcomes. The installation ZIP and a world save ZIP serve different purposes.
 
-### 5.1. 사용 가이드 (Getting Started)
+**Edition status:** GPTs is v6; GEM remains v5. The `.cc` feature is temporarily excluded with restoration planned; the previous image mode is excluded. See [legacy](legacy/) for historical versions. The former v4 architecture README has been preserved under `legacy/v4/`.
 
-1.  프로젝트 설정: `project-structure.txt`에 명시된 디렉토리 구조에 따라 프롬프트 파일을 배치합니다.
-2.  모듈 수정: `prompt_src/` 내에서 필요한 모듈의 내용을 수정하거나 새로운 모듈을 추가합니다.
-3.  번들링: 제공된 번들러 스크립트(`prompt-bundler.js`)를 사용하여 `prompt_src/` 내의 모든 모듈을 하나의 `master_prompt.txt` 파일로 병합합니다.
-4.  실행: 생성된 `master_prompt.txt(Singulari-Tea Codex_vx_xxxxxx.txt)`의 전체 내용을 Gemini 2.5 Pro를 지원하는 환경에 입력하여 시뮬레이션을 시작합니다.
+## 제작자와 라이선스
 
-### 5.2. 소스코드 정책 (Source Code Policy)
+**fewweekslater / lemos999** · [GitHub](https://github.com/lemos999/Singulari-Tea-Codex-Prompt) · [후원](https://ctee.kr/place/fewweekslater)
 
--   본 리포지토리에 포함된 모든 `*.prompt.txt` 파일은 자유롭게 열람 및 수정할 수 있습니다.
--   단, `prompt-bundler.js`를 포함한 번들링 관련 스크립트의 소스코드는 비공개입니다.
--   이 프로젝트는 apache license 2.0에 따라 배포됩니다. 
-
-
-
+이 저장소의 라이선스는 [Apache License 2.0](LICENSE)입니다. 사용·수정·재배포 시 해당 라이선스와 고지 의무를 따라주세요. 기존 라이선스 파일은 유지합니다.

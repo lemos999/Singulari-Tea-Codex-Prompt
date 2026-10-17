@@ -1,0 +1,1 @@
+At onboarding offer GenUI buttons for story-text minima of 5000/8000/12000/15000 characters. Default auto; honor the chosen floor per playable reply. Allow change/reset; save/restore it. Settings cost no turn/time. Expand scene-fit dialogue/detail within canon and pacing.
